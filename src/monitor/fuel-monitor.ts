@@ -72,6 +72,15 @@ export class FuelMonitor {
           const isAvailable = isFuelAvailable(station.operationsCount, station.fuels, fuelType);
 
           if (wasAvailable === null) {
+            if (isAvailable) {
+              events.push({
+                stationId: station.id,
+                stationName: station.name,
+                fuelType,
+                type: 'appeared',
+                timestamp: date,
+              });
+            }
             this.deps.database.setState(station.id, fuelType, isAvailable, date.toISOString());
             continue;
           }

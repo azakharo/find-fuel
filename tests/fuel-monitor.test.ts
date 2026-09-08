@@ -220,7 +220,7 @@ describe('FuelMonitor.check', () => {
     expect(notifier.sendEvents).not.toHaveBeenCalled();
   });
 
-  it('does not emit on first check (no prior state) but saves state', async () => {
+  it('emits appeared on first check when fuel is available', async () => {
     const station = makeStation(
       STATION_ID,
       'АЗС Тест',
@@ -234,9 +234,29 @@ describe('FuelMonitor.check', () => {
     const monitor = new FuelMonitor(baseConfig, { fetcher, database: db, notifier });
     const result = await monitor.check(new Date('2026-09-09T12:00:00+03:00'));
 
+    expect(result.events).toHaveLength(1);
+    expect(result.events[0]?.type).toBe('appeared');
+    expect(notifier.sendEvents).toHaveBeenCalledOnce();
+    expect(db.states.get(`${STATION_ID}:ai95`)).toBe(true);
+  });
+
+  it('does not emit on first check when fuel is unavailable but saves state', async () => {
+    const station = makeStation(
+      STATION_ID,
+      'АЗС Тест',
+      [makeFuel('ai95', 'unknown')],
+      1
+    );
+    const fetcher = vi.fn(async () => [station]);
+    const db = makeMockDB();
+    const notifier = makeMockNotifier();
+
+    const monitor = new FuelMonitor(baseConfig, { fetcher, database: db, notifier });
+    const result = await monitor.check(new Date('2026-09-09T12:00:00+03:00'));
+
     expect(result.events).toHaveLength(0);
     expect(notifier.sendEvents).not.toHaveBeenCalled();
-    expect(db.states.get(`${STATION_ID}:ai95`)).toBe(true);
+    expect(db.states.get(`${STATION_ID}:ai95`)).toBe(false);
   });
 
   it('handles missing operationsCount as 0', async () => {

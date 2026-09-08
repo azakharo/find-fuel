@@ -33,6 +33,19 @@ async function main(): Promise<void> {
 
   console.log(`FindFuel started. Cron: ${config.pollCron}, timezone: ${config.timezone}`);
 
+  try {
+    const initialResult = await monitor.check();
+    if (initialResult.skipped) {
+      console.log('Initial check skipped: not a matching day');
+    } else if (initialResult.events.length > 0) {
+      console.log(`Initial check events: ${initialResult.events.length}`);
+    } else {
+      console.log('Initial check: no changes');
+    }
+  } catch (e) {
+    console.error('Initial check failed:', e);
+  }
+
   cron.schedule(config.pollCron, async () => {
     try {
       const result = await monitor.check();
