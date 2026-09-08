@@ -65,6 +65,20 @@ export class EmailNotifier implements EventSender {
     }
   }
 
+  async sendStartup(opts?: { apiError?: string }): Promise<void> {
+    const time = format(new Date(), 'dd.MM.yyyy HH:mm:ss');
+    let text = `Приложение FindFuel запущено. Время: ${time}`;
+    if (opts?.apiError !== undefined) {
+      text += `\nВнимание: начальный опрос API завершился с ошибкой: ${opts.apiError}`;
+    }
+    await this.transporter.sendMail({
+      from: this.from,
+      to: this.to,
+      subject: 'FindFuel: приложение запущено',
+      text,
+    });
+  }
+
   async verifyConnection(): Promise<void> {
     await this.transporter.verify();
   }

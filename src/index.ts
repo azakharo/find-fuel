@@ -33,8 +33,11 @@ async function main(): Promise<void> {
 
   console.log(`FindFuel started. Cron: ${config.pollCron}, timezone: ${config.timezone}`);
 
+  let hasFuelEvents = false;
+  let apiError: string | undefined;
   try {
     const initialResult = await monitor.check();
+    hasFuelEvents = initialResult.events.length > 0;
     if (initialResult.skipped) {
       console.log('Initial check skipped: not a matching day');
     } else if (initialResult.events.length > 0) {
@@ -43,7 +46,17 @@ async function main(): Promise<void> {
       console.log('Initial check: no changes');
     }
   } catch (e) {
+    apiError = e instanceof Error ? e.message : String(e);
     console.error('Initial check failed:', e);
+  }
+
+  if (!hasFuelEvents) {
+    try {
+      await notifier.sendStartup(apiError !== undefined ? { apiError } : undefined);
+      console.log('Startup notification sent');
+    } catch (e) {
+      console.error('Failed to send startup notification:', e);
+    }
   }
 
   cron.schedule(config.pollCron, async () => {
