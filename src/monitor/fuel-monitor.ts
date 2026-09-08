@@ -1,4 +1,4 @@
-import type { StateStore } from '../db/database.js';
+import type { StateStore } from '../state/memory-store.js';
 import type { EventSender } from '../notifications/email-notifier.js';
 import type { StationFetcher } from '../api/sberazs-client.js';
 import type { Fuel, FuelEvent, PlateType, Station, TileCoord } from '../types.js';

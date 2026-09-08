@@ -13,7 +13,7 @@
 
 - Node.js 18+ (используется built-in `fetch`)
 - TypeScript (строгий режим, без `any`)
-- `better-sqlite3` — хранение состояния
+- In-memory (`Map`) — хранение состояния доступности топлива
 - `nodemailer` — отправка email через Gmail SMTP
 - `node-cron` — расписание опроса
 - `date-fns` — операции с датой/временем
@@ -41,8 +41,8 @@ src/
 ├── types.ts              # Общие типы
 ├── api/
 │   └── sberazs-client.ts # HTTP-клиент для SberAZS API
-├── db/
-│   └── database.ts      # SQLite: init, get/set state
+├── state/
+│   └── memory-store.ts  # In-memory: get/set state
 ├── notifications/
 │   └── email-notifier.ts # Отправка email через nodemailer
 └── monitor/
@@ -76,7 +76,7 @@ tests/
 - Проект контейнеризирован: `Dockerfile`, `docker-compose.yml`
 - `.env.example` — пример переменных окружения
 - Деплой пока не требуется, только подготовка файлов
-- БД SQLite хранится в volume: `data/findfuel.db`
+- Состояние хранится in-memory (без volume); при рестарте контейнера уведомляет о доступном бензине заново
 
 ## API СберАЗС
 

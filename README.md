@@ -8,7 +8,7 @@
 - Определение наличия бензина по двум критериям: `availabilityStatus == "available"` **И** `operationsCount >= 4`
 - Уведомления на email через Gmail SMTP (app password) при появлении/пропаже бензина
 - Учёт чётных/нечётных дней (по типу госномера)
-- Хранение состояния в SQLite — переживает рестарт, без повторных уведомлений
+- Хранение состояния в памяти (in-memory) — минимум зависимостей, простая Docker-сборка
 - Конфигурация списка АЗС и марок бензина через env vars
 
 ## Установка
@@ -113,8 +113,8 @@ src/
 ├── types.ts              # Общие типы
 ├── api/
 │   └── sberazs-client.ts # HTTP-клиент для SberAZS API
-├── db/
-│   └── database.ts       # SQLite: init, get/set state
+├── state/
+│   └── memory-store.ts   # In-memory хранилище состояния
 ├── notifications/
 │   └── email-notifier.ts # Отправка email через nodemailer
 └── monitor/
@@ -132,7 +132,7 @@ tests/
 | Расписание  | `node-cron`                   | Надёжный cron для Node.js                    |
 | HTTP клиент | Built-in `fetch` (Node 18+)   | Без лишних зависимостей                      |
 | Email       | `nodemailer` через Gmail SMTP | Стандарт, поддержка app passwords            |
-| БД          | `better-sqlite3`              | Синхронный, быстрый, один файл               |
+| БД          | In-memory (`Map`)             | Минимум зависимостей, простая Docker-сборка; состояние сбрасывается при рестарте (приемлемо по семантике уведомлений) |
 | Дата/время  | `date-fns`                    | По правилам проекта                          |
 | Тесты       | `vitest`                      | Быстрый, совместим с TS                      |
 | Запуск TS   | `tsx`                         | Быстрый, без компиляции для dev              |

@@ -8,7 +8,7 @@
 | Расписание  | `node-cron`                   | Надёжный cron для Node.js                    |
 | HTTP клиент | Built-in `fetch` (Node 18+)   | Без лишних зависимостей                      |
 | Email       | `nodemailer` через Gmail SMTP | Стандарт, поддержка app passwords            |
-| БД          | `better-sqlite3`              | Синхронный, быстрый, один файл               |
+| БД          | In-memory (`Map`)            | Минимум зависимостей, простая Docker-сборка; состояние сбрасывается при рестарте |
 | Дата/время  | `date-fns`                    | По правилам проекта                          |
 | Тесты       | `vitest`                      | Быстрый, совместим с TS                      |
 | Запуск TS   | `tsx`                         | Быстрый, без компиляции для dev              |
@@ -20,7 +20,7 @@
 3. Для каждого тайла из `STATIONS` делается GET-запрос к `https://sberazs.ru/api/stations/tile`.
 4. Из ответа для каждой станции проверяются топлива из `FUEL_TYPES`.
 5. Бензин марки `<target>` считается "доступным" если: `fuels[type=<target>].availabilityStatus == "available"` **И** `operationsCount >= 4` (отсутствие = 0).
-6. Сравнение с состоянием в SQLite:
+6. Сравнение с состоянием in-memory:
    - был `false` → стал `true` → уведомление "появился"
    - был `true` → стал `false` → уведомление "закончился"
 7. Уведомление отправляется через Gmail SMTP на `NOTIFICATION_EMAIL`.
@@ -36,8 +36,8 @@ FindFuel/
 │   ├── types.ts                  # Общие типы (Station, Fuel, StationState)
 │   ├── api/
 │   │   └── sberazs-client.ts     # HTTP-клиент для SberAZS API
-│   ├── db/
-│   │   └── database.ts           # SQLite: init, get/set state
+│   ├── state/
+│   │   └── memory-store.ts     # In-memory хранилище состояния
 │   ├── notifications/
 │   │   └── email-notifier.ts     # Отправка email через nodemailer
 │   └── monitor/

@@ -6,7 +6,7 @@ import {
   FuelMonitor,
 } from '../src/monitor/fuel-monitor.js';
 import type { Fuel, Station, TileCoord } from '../src/types.js';
-import type { StateStore } from '../src/db/database.js';
+import type { StateStore } from '../src/state/memory-store.js';
 import type { EventSender } from '../src/notifications/email-notifier.js';
 
 const TILE: TileCoord = { z: 13, x: 5081, y: 2593 };

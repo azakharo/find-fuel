@@ -1,6 +1,6 @@
 import cron from 'node-cron';
 import { loadConfig } from './config.js';
-import { FuelDatabase } from './db/database.js';
+import { MemoryStateStore } from './state/memory-store.js';
 import { EmailNotifier } from './notifications/email-notifier.js';
 import { FuelMonitor } from './monitor/fuel-monitor.js';
 import { fetchStations } from './api/sberazs-client.js';
@@ -8,7 +8,7 @@ import { fetchStations } from './api/sberazs-client.js';
 async function main(): Promise<void> {
   const config = loadConfig();
 
-  const db = new FuelDatabase('data/findfuel.db');
+  const db = new MemoryStateStore();
   const notifier = new EmailNotifier({
     host: config.smtpHost,
     port: config.smtpPort,

@@ -22,14 +22,12 @@
   },
   "homepage": "https://github.com/azakharo/find-fuel#readme",
   "dependencies": {
-    "better-sqlite3": "13.0.3",
     "date-fns": "4.4.0",
     "dotenv": "17.4.2",
     "node-cron": "4.6.0",
     "nodemailer": "10.0.1"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "9.6.0",
     "@types/node": "26.5.0",
     "@types/node-cron": "3.0.11",
     "@types/nodemailer": "8.0.1",
